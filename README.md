@@ -34,11 +34,14 @@ pip install -r req.txt
 ### Étape 2: Lancement du Projet
 
 ```bash
-# Méthode simple: utiliser le script de lancement
+# Méthode 1: Utiliser le Makefile (recommandé)
+make run
+
+# Méthode 2: Utiliser le script de lancement
 ./start.sh
 ```
 
-Le script lancera automatiquement:
+Le lancement démarrera automatiquement:
 - ✅ **Backend FastAPI** sur le port 8000 (en arrière-plan)
 - ✅ **Frontend Streamlit** sur le port 8501 (en arrière-plan)
 - ✅ **Chargement des documents** pour Client A et Client B
@@ -63,7 +66,26 @@ tail -f frontend.log   # Logs du frontend
 ### Arrêter le Projet
 
 ```bash
+# Avec Makefile
+make stop
+
+# Ou manuellement
 pkill -f uvicorn && pkill -f streamlit
+```
+
+## 🔧 Commandes Makefile
+
+```bash
+make help           # Afficher toutes les commandes disponibles
+make install        # Installer les dépendances
+make run            # Lancer le projet (backend + frontend)
+make stop           # Arrêter tous les services
+make restart        # Redémarrer les services
+make test           # Exécuter les tests de séparation
+make logs           # Voir les logs du backend
+make backend-logs   # Logs backend en temps réel
+make frontend-logs  # Logs frontend en temps réel
+make clean          # Nettoyer les fichiers temporaires
 ```
 
 ## � Comment ça Fonctionne
