@@ -1,10 +1,22 @@
 import streamlit as st
 import httpx
+import time
+
 st.set_page_config(
     page_title="SaaS Multi-Tenant RAG",
     page_icon="🔐",
     layout="wide"
 )
+
+def display_animated_text(text, delay=0.01):
+    """Display text with typewriter animation"""
+    placeholder = st.empty()
+    displayed_text = ""
+    for char in text:
+        displayed_text += char
+        placeholder.markdown(displayed_text)
+        time.sleep(delay)
+    return placeholder
 
 API_URL = "http://localhost:8000"
 
@@ -83,6 +95,7 @@ if len(st.session_state.messages) == 0:
         with cols[idx % 2]:
             if st.button(question, key=f"q_{idx}", use_container_width=True):
                 st.session_state.messages.append({"role": "user", "content": question})
+                
                 try:
                     response = httpx.post(
                         f"{API_URL}/query",
@@ -140,7 +153,7 @@ if prompt := st.chat_input("Posez votre question..."):
                 
                 if response.status_code == 200:
                     result = response.json()
-                    st.write(result['answer'])
+                    display_animated_text(result['answer'], delay=0.003)
                     
                     if result.get('sources'):
                         st.caption("📄 **Sources:** " + ", ".join(result['sources']))
