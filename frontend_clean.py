@@ -1,10 +1,5 @@
-"""
-Interface Streamlit pour le système SaaS multi-tenant - Clean & Simple
-"""
 import streamlit as st
 import httpx
-
-# Configuration
 st.set_page_config(
     page_title="SaaS Multi-Tenant RAG",
     page_icon="🔐",
@@ -46,7 +41,6 @@ TENANTS = {
     }
 }
 
-# Simple CSS
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
@@ -54,18 +48,13 @@ st.markdown("""
     .stDeployButton {display: none;}
 </style>
 """, unsafe_allow_html=True)
-
-# Session state
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 if 'selected_tenant' not in st.session_state:
     st.session_state.selected_tenant = "Client A"
 
-# Header
 st.title("🔐 Assistant Multi-Tenant")
 st.caption("Recherche documentaire sécurisée")
-
-# Client selector
 col1, col2, col3 = st.columns([1, 1, 1])
 with col1:
     tenant_info = TENANTS[st.session_state.selected_tenant]
@@ -84,22 +73,16 @@ with col2:
 
 st.divider()
 
-# Show example questions if no messages
 if len(st.session_state.messages) == 0:
     st.subheader("💡 Questions suggérées")
     st.caption("Cliquez sur une question pour la poser")
     
     tenant_info = TENANTS[st.session_state.selected_tenant]
-    
-    # Display questions in columns
     cols = st.columns(2)
     for idx, question in enumerate(tenant_info['questions']):
         with cols[idx % 2]:
             if st.button(question, key=f"q_{idx}", use_container_width=True):
-                # Add the question to session and trigger response
                 st.session_state.messages.append({"role": "user", "content": question})
-                
-                # Get response
                 try:
                     response = httpx.post(
                         f"{API_URL}/query",
@@ -132,22 +115,18 @@ if len(st.session_state.messages) == 0:
     
     st.divider()
 
-# Display messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
         if message.get("sources"):
             st.caption("📄 **Sources:** " + ", ".join(message["sources"]))
 
-# Chat input
 if prompt := st.chat_input("Posez votre question..."):
-    # Add user message
     st.session_state.messages.append({"role": "user", "content": prompt})
     
     with st.chat_message("user"):
         st.write(prompt)
     
-    # Get response
     with st.chat_message("assistant"):
         with st.spinner("Recherche en cours..."):
             try:

@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-Script de test automatique pour valider la séparation des tenants
-"""
 import httpx
-import time
 import sys
 
 API_URL = "http://localhost:8000"
@@ -46,11 +42,8 @@ TESTS = [
 ]
 
 def run_tests():
-    """Exécute tous les tests"""
     print("🧪 Démarrage des tests de séparation des tenants\n")
     print("=" * 70)
-    
-    # Vérifier que le backend est accessible
     try:
         response = httpx.get(f"{API_URL}/", timeout=5)
         if response.status_code != 200:
@@ -81,7 +74,6 @@ def run_tests():
                 timeout=30
             )
             
-            # Test d'authentification
             if test.get('should_fail_auth'):
                 if response.status_code == 401:
                     print("✅ PASS - Authentification refusée comme attendu")
@@ -98,13 +90,11 @@ def run_tests():
             
             result = response.json()
             
-            # Vérifier le tenant
             if result['tenant_id'] != test['expected_tenant']:
                 print(f"❌ FAIL - Mauvais tenant: {result['tenant_id']} vs {test['expected_tenant']}")
                 failed += 1
                 continue
             
-            # Vérifier la présence/absence de réponse
             if test['should_find_answer']:
                 if result['has_answer'] and result['sources']:
                     print(f"✅ PASS - Réponse trouvée avec sources: {result['sources']}")
@@ -129,7 +119,6 @@ def run_tests():
             print(f"❌ FAIL - Exception: {e}")
             failed += 1
     
-    # Résumé
     print("\n" + "=" * 70)
     print(f"\n📊 Résultats: {passed} PASS, {failed} FAIL sur {len(TESTS)} tests")
     

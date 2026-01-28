@@ -49,14 +49,11 @@ class HealthResponse(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    """Chargement des documents au démarrage"""
-    # Charger les documents pour le client A
     clientA_data_path = os.path.join(DATA_PATH, "clientA")
     if os.path.exists(clientA_data_path):
         rag_service.initialize_tenant_documents("clientA", clientA_data_path)
         print(f"✅ Documents chargés pour clientA")
     
-    # Charger les documents pour le client B
     clientB_data_path = os.path.join(DATA_PATH, "clientB")
     if os.path.exists(clientB_data_path):
         rag_service.initialize_tenant_documents("clientB", clientB_data_path)
@@ -65,10 +62,7 @@ async def startup_event():
 
 @app.get("/", response_model=HealthResponse)
 async def health_check():
-    """Endpoint de santé"""
-    return {
-        "status": "ok"
-    }
+    return {"status": "ok"}
 
 
 @app.get("/health/{tenant_id}", response_model=HealthResponse)
@@ -76,10 +70,6 @@ async def tenant_health(
     tenant_id: str,
     client_id: str = Depends(get_current_client)
 ):
-    """
-    Vérification de santé pour un tenant spécifique
-    Accessible uniquement par le client authentifié
-    """
     if client_id != tenant_id:
         raise HTTPException(
             status_code=403,
@@ -87,11 +77,7 @@ async def tenant_health(
         )
     
     stats = rag_service.get_tenant_stats(client_id)
-    
-    return {
-        "status": "ok",
-        "tenant_stats": stats
-    }
+    return {"status": "ok", "tenant_stats": stats}
 
 
 @app.post("/query", response_model=QueryResponse)
@@ -99,18 +85,9 @@ async def query_documents(
     request: QueryRequest,
     client_id: str = Depends(get_current_client)
 ):
-    """
-    Recherche dans les documents du client authentifié
-    
-    L'authentification se fait via le header X-API-KEY
-    Le client_id est automatiquement déduit du header
-    
-    ⚠️ POINT CLÉ : Le client ne peut jamais accéder aux documents d'un autre tenant
-    """
     if not request.question or len(request.question.strip()) == 0:
         raise HTTPException(status_code=400, detail="Question vide")
     
-    # Recherche UNIQUEMENT dans les documents du client authentifié
     result = rag_service.query(client_id, request.question, n_results=3)
     
     return {
@@ -123,14 +100,8 @@ async def query_documents(
 
 @app.post("/reload-documents")
 async def reload_documents(client_id: str = Depends(get_current_client)):
-    """
-    Recharge les documents pour le client authentifié
-    Utile pour le développement
-    """
-    # Effacer les anciennes données
     document_store.clear_tenant_data(client_id)
     
-    # Recharger
     data_path = os.path.join(DATA_PATH, client_id)
     if os.path.exists(data_path):
         rag_service.initialize_tenant_documents(client_id, data_path)
