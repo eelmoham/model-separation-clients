@@ -53,7 +53,7 @@ if 'messages' not in st.session_state:
 if 'selected_tenant' not in st.session_state:
     st.session_state.selected_tenant = "Client A"
 
-st.title("🔐 Assistant Multi-Tenant")
+st.title("🔐 Assistant Multi-Tenant By EL MEHDI EL MOHAMMADY")
 st.caption("Recherche documentaire sécurisée")
 col1, col2, col3 = st.columns([1, 1, 1])
 with col1:
