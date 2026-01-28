@@ -1,192 +1,116 @@
 # 🔐 Système SaaS Multi-Tenant - RAG avec Séparation Stricte des Clients
 
-## 📋 Vue d'ensemble
+Application SaaS multi-tenant avec séparation stricte des données clients utilisant RAG (Retrieval-Augmented Generation) et ChromaDB.
 
-Ce projet implémente un système SaaS multi-tenant simulant une application utilisée par deux clients indépendants (Client A et Client B). Le système garantit une **séparation stricte des données** et des réponses basées uniquement sur les documents du client authentifié.
+## ✨ Caractéristiques
 
-### Caractéristiques principales
+- 🔒 **Séparation stricte des clients** - Isolation complète des données par tenant
+- 🔑 **Authentification API Key** - Header HTTP `X-API-KEY`
+- 🤖 **RAG avec ChromaDB** - Recherche sémantique dans les documents
+- 💬 **Interface moderne** - Style ChatGPT avec streaming de texte
+- ⚡ **FastAPI Backend** - API REST performante
+- 🎨 **Streamlit Frontend** - Interface utilisateur élégante
 
-- ✅ **Séparation stricte des clients** : Chaque client accède uniquement à ses propres documents
-- ✅ **Authentification par API Key** : Via header HTTP `X-API-KEY` (jamais dans le body)
-- ✅ **Recherche sémantique** : RAG (Retrieval-Augmented Generation) avec embeddings
-- ✅ **Sources traçables** : Chaque réponse indique ses sources
-- ✅ **Gestion des cas impossibles** : Réponses appropriées quand aucune information n'est disponible
-- ✅ **Interface simple** : Streamlit pour tester facilement les deux clients
+## 🚀 Démarrage Rapide
 
-## 🧰 Stack Technique
-
-- **Backend** : FastAPI
-- **Base vectorielle** : ChromaDB avec embeddings Sentence-Transformers
-- **Frontend** : Streamlit
-- **Langage** : Python 3.9+
-
-## 📦 Structure du Projet
-
-```
-project-test/
-├── app/
-│   ├── config.py              # Configuration des API keys
-│   ├── deps.py                # Dépendances FastAPI (authentification)
-│   ├── document_store.py      # Stockage vectoriel par tenant (ChromaDB)
-│   ├── rag_service.py         # Service RAG avec recherche sémantique
-│   └── main.py                # API FastAPI
-├── data/
-│   ├── clientA/               # Documents du Client A (Tech)
-│   │   ├── architecture.txt
-│   │   ├── api_documentation.txt
-│   │   └── deployment.txt
-│   └── clientB/               # Documents du Client B (Médical)
-│       ├── cardiology.txt
-│       ├── diabetes.txt
-│       └── antibiotics.txt
-├── frontend.py                # Interface Streamlit
-├── req.txt                    # Dépendances Python
-└── README.md                  # Ce fichier
-```
-
-## 🚀 Installation et Lancement
-
-### Prérequis
-
-- Python 3.9 ou supérieur
-- pip
-
-### 1. Installation des dépendances
+### Installation
 
 ```bash
+# Cloner le projet
+git clone https://github.com/eelmoham/model-separation-clients.git
+cd model-separation-clients
+
+# Créer l'environnement virtuel
+python3 -m venv venv
+source venv/bin/activate  # macOS/Linux
+# ou: venv\Scripts\activate  # Windows
+
+# Installer les dépendances
 pip install -r req.txt
 ```
 
-**Note** : Le téléchargement des modèles d'embeddings peut prendre quelques minutes au premier lancement.
-
-### 2. Lancer le Backend
-
-Ouvrez un terminal et exécutez :
+### Lancement
 
 ```bash
-python -m uvicorn app.main:app --reload
+# Démarrer backend et frontend
+./start.sh
 ```
 
-Le backend sera accessible sur `http://localhost:8000`
+**URLs:**
+- Frontend: http://localhost:8501
+- Backend API: http://localhost:8000
+- Documentation API: http://localhost:8000/docs
 
-Vous devriez voir dans les logs :
+## 📁 Structure du Projet
+
 ```
-✅ Documents chargés pour clientA
-✅ Documents chargés pour clientB
+.
+├── app/
+│   ├── main.py              # API FastAPI
+│   ├── document_store.py    # Gestion ChromaDB
+│   ├── rag_service.py       # Service RAG
+│   ├── deps.py              # Authentification
+│   └── config.py            # Configuration
+├── data/
+│   ├── clientA/             # Documents Client A
+│   └── clientB/             # Documents Client B
+├── frontend.py              # Interface Streamlit
+├── test_separation.py       # Tests d'isolation
+├── start.sh                 # Script de lancement
+└── req.txt                  # Dépendances Python
 ```
 
-**API Documentation** : `http://localhost:8000/docs`
+## 🎯 Utilisation
 
-### 3. Lancer l'Interface Frontend
+### Interface Web
 
-Dans un **second terminal**, exécutez :
+1. Ouvrir http://localhost:8501
+2. Sélectionner un client (A ou B)
+3. Poser une question
+4. Voir la réponse avec sources
+
+### API REST
 
 ```bash
-streamlit run frontend.py
-```
-
-L'interface s'ouvrira automatiquement dans votre navigateur sur `http://localhost:8501`
-
-## 🧪 Comment Tester la Séparation des Clients
-
-### Test 1 : Client A - Questions Techniques
-
-1. Dans l'interface Streamlit, sélectionner **"Client A (Tech)"** dans la barre latérale
-2. Poser des questions techniques :
-   - "Quelle est l'architecture de la plateforme ?"
-   - "Comment déployer en production ?"
-   - "Quels sont les endpoints API disponibles ?"
-
-**Résultat attendu** : ✅ Réponses avec sources provenant des documents techniques
-
-3. Maintenant poser une question médicale :
-   - "Comment traiter le diabète de type 2 ?"
-
-**Résultat attendu** : ❌ "Aucune information pertinente trouvée dans vos documents"
-
-### Test 2 : Client B - Questions Médicales
-
-1. Sélectionner **"Client B (Médical)"** dans la barre latérale
-2. Poser des questions médicales :
-   - "Quels sont les symptômes d'une insuffisance cardiaque ?"
-   - "Quel antibiotique pour une angine ?"
-   - "Comment traiter le diabète ?"
-
-**Résultat attendu** : ✅ Réponses avec sources provenant des documents médicaux
-
-3. Poser une question technique :
-   - "Quelle est l'architecture microservices ?"
-
-**Résultat attendu** : ❌ "Aucune information pertinente trouvée dans vos documents"
-
-### Test 3 : API Direct avec cURL
-
-Vous pouvez aussi tester directement l'API :
-
-**Client A** :
-```bash
-curl -X POST "http://localhost:8000/query" \
-  -H "X-API-KEY: tenantA_key" \
+# Client A
+curl -X POST http://localhost:8000/query \
   -H "Content-Type: application/json" \
-  -d '{"question": "Quelle est l architecture de la plateforme ?"}'
-```
+  -H "X-API-KEY: tenantA_key" \
+  -d '{"question":"Quelle est la procédure de résiliation?"}'
 
-**Client B** :
-```bash
-curl -X POST "http://localhost:8000/query" \
+# Client B
+curl -X POST http://localhost:8000/query \
+  -H "Content-Type: application/json" \
   -H "X-API-KEY: tenantB_key" \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Comment traiter le diabète ?"}'
+  -d '{"question":"Comment déclarer un sinistre?"}'
 ```
 
-**Test de sécurité** - Client A essayant d'accéder aux données du Client B :
+## 🧪 Tests
+
 ```bash
-# Cette requête avec l'API key du Client A ne retournera JAMAIS 
-# d'information provenant des documents médicaux du Client B
-curl -X POST "http://localhost:8000/query" \
-  -H "X-API-KEY: tenantA_key" \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Comment traiter le diabète ?"}'
+# Tester l'isolation des tenants
+python test_separation.py
 ```
 
-## 🔑 Authentification
+## 🔑 Clients & API Keys
 
-Le système utilise des API keys dans le header HTTP :
+| Client   | API Key        | Documents                           |
+|----------|----------------|-------------------------------------|
+| Client A | `tenantA_key`  | Résiliation, RC Pro A               |
+| Client B | `tenantB_key`  | Sinistres, RC Pro B                 |
 
-| Client | API Key | Tenant ID | Documents |
-|--------|---------|-----------|-----------|
-| Client A | `tenantA_key` | `clientA` | Documents techniques |
-| Client B | `tenantB_key` | `clientB` | Documents médicaux |
+## 🛠️ Technologies
 
-**Important** : L'API key est passée dans le header `X-API-KEY`, **JAMAIS dans le body** de la requête.
+- **Backend**: FastAPI, Uvicorn
+- **Base de données**: ChromaDB (vecteurs)
+- **Embeddings**: Sentence-Transformers (all-MiniLM-L6-v2)
+- **Frontend**: Streamlit
+- **HTTP Client**: httpx
+- **Python**: 3.9+
 
-## 🏗️ Architecture et Approche
+## 📝 Licence
 
-### Séparation des Tenants
-
-1. **Au niveau de l'authentification** : 
-   - Middleware FastAPI qui extrait le `tenant_id` depuis l'API key
-   - Validation avant chaque requête
-
-2. **Au niveau du stockage** :
-   - Chaque tenant a sa propre collection dans ChromaDB (`tenant_clientA`, `tenant_clientB`)
-   - Isolation complète au niveau de la base vectorielle
-
-3. **Au niveau de la recherche** :
-   - Le service RAG ne recherche **QUE** dans la collection du tenant authentifié
-   - Impossible d'accéder aux embeddings d'un autre tenant
-
-### Gestion des Réponses
-
-- **Réponse avec source** : Quand des documents pertinents sont trouvés (distance < 1.0)
-- **Réponse "impossible"** : Quand aucun document pertinent n'existe pour le client
-- **Traçabilité** : Chaque réponse indique le fichier source
-
-### Critères de Pertinence
-
-- Similarité cosinus via embeddings (Sentence-Transformers)
-- Seuil de distance < 1.0 pour considérer un document pertinent
-- Top 3 documents les plus pertinents analysés
+MIT
 
 ## 🚫 Points de Vigilance (Critères Éliminatoires)
 
