@@ -1,0 +1,35 @@
+Documentation API REST - Version 2.0
+
+Endpoints Disponibles:
+
+POST /api/v2/users
+Création d'un nouvel utilisateur
+Body: { "email": "user@example.com", "name": "John Doe", "role": "admin" }
+Response: 201 Created avec l'objet utilisateur
+
+GET /api/v2/users/{id}
+Récupération d'un utilisateur par ID
+Response: 200 OK avec l'objet utilisateur
+
+PUT /api/v2/users/{id}
+Mise à jour d'un utilisateur
+Body: { "name": "Jane Doe", "role": "user" }
+Response: 200 OK
+
+DELETE /api/v2/users/{id}
+Suppression d'un utilisateur
+Response: 204 No Content
+
+GET /api/v2/analytics/dashboard
+Récupération des métriques du tableau de bord
+Query params: ?from=2024-01-01&to=2024-01-31
+Response: Données d'analytics agrégées
+
+Rate Limiting:
+- 1000 requêtes par heure pour les endpoints publics
+- 5000 requêtes par heure pour les clients premium
+- 429 Too Many Requests si limite dépassée
+
+Authentication:
+Utiliser le header: Authorization: Bearer {token}
+Les tokens expirent après 24 heures

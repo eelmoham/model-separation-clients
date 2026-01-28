@@ -1,0 +1,36 @@
+Procédures de Déploiement
+
+Environnements:
+1. Development (dev): Déploiement automatique à chaque commit sur main
+2. Staging (staging): Déploiement manuel après validation QA
+3. Production (prod): Déploiement planifié avec rollback automatique
+
+Process de Déploiement Production:
+
+Étape 1: Validation
+- Tests unitaires: minimum 80% de couverture
+- Tests d'intégration: tous les scénarios critiques
+- Tests de performance: moins de 200ms de latence p95
+- Security scan: aucune vulnérabilité critique
+
+Étape 2: Préparation
+- Créer un tag git: v{version}
+- Builder l'image Docker
+- Scanner l'image avec Trivy
+- Pusher sur ECR (Elastic Container Registry)
+
+Étape 3: Déploiement
+- Blue/Green deployment via Kubernetes
+- Déploiement progressif: 10% -> 50% -> 100%
+- Monitoring des métriques clés pendant 15 minutes
+- Rollback automatique si taux d'erreur > 1%
+
+Étape 4: Vérification
+- Health checks sur tous les pods
+- Smoke tests automatisés
+- Vérification des logs CloudWatch
+- Notification Slack de succès/échec
+
+Rollback:
+En cas de problème, exécuter: ./scripts/rollback.sh {version_précédente}
+Le rollback prend environ 2 minutes.

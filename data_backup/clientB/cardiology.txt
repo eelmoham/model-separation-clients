@@ -1,0 +1,43 @@
+Guide Médical - Protocole de Diagnostic des Pathologies Cardiovasculaires
+
+Symptômes Cardiaques Courants:
+
+Douleur Thoracique:
+- Angine de poitrine: douleur oppressante irradiant vers le bras gauche
+- Infarctus du myocarde: douleur intense, persistante, avec sueurs et nausées
+- Péricardite: douleur aiguë augmentée par l'inspiration profonde
+
+Dyspnée (Essoufflement):
+- Insuffisance cardiaque: essoufflement progressif, aggravé en position allongée
+- Embolie pulmonaire: dyspnée brutale avec douleur thoracique
+- Asthme cardiaque: essoufflement nocturne avec sifflements
+
+Palpitations:
+- Fibrillation auriculaire: battements irréguliers, risque thromboembolique
+- Tachycardie: rythme cardiaque rapide (>100 bpm au repos)
+- Extrasystoles: battements prématurés, généralement bénins
+
+Examens Diagnostiques:
+
+ECG (Électrocardiogramme):
+- Détection des troubles du rythme
+- Identification des signes d'ischémie myocardique
+- Diagnostic des troubles de conduction
+
+Échocardiographie:
+- Évaluation de la fonction ventriculaire (fraction d'éjection)
+- Détection des valvulopathies
+- Visualisation du péricarde
+
+Coronarographie:
+- Examen de référence pour les artères coronaires
+- Indication: angor instable, suspicion de sténose significative
+- Permet intervention directe (angioplastie)
+
+Traitement:
+
+Médicaments:
+- Bêta-bloquants: réduction de la fréquence cardiaque
+- IEC (Inhibiteurs de l'Enzyme de Conversion): protection cardiaque
+- Statines: réduction du cholestérol
+- Antiagrégants plaquettaires: prévention des thromboses

@@ -1,0 +1,62 @@
+Guide de Prescription - Antibiotiques en Médecine Générale
+
+Principes Généraux:
+- Prescrire uniquement si infection bactérienne confirmée ou très probable
+- Respecter les recommandations de bon usage
+- Durée adaptée (éviter les traitements trop longs)
+- Réévaluation à 48-72h
+
+Infections Respiratoires:
+
+Rhinopharyngite:
+- Étiologie: VIRALE dans 99% des cas
+- Traitement: symptomatique uniquement (paracétamol, sérum physiologique)
+- ❌ PAS D'ANTIBIOTIQUE
+
+Angine:
+- Test de Diagnostic Rapide (TDR) obligatoire
+- Si TDR positif (streptocoque A):
+  * 1ère intention: Amoxicilline 1g x 2/jour pendant 6 jours
+  * Allergie pénicilline: Azithromycine 500mg/jour pendant 3 jours
+
+Otite Moyenne Aiguë:
+- Enfant < 2 ans: Amoxicilline 80-90 mg/kg/jour en 2 prises, 8-10 jours
+- Adulte: Amoxicilline 1g x 3/jour, 5 jours
+- Échec à 48h: Amoxicilline-acide clavulanique
+
+Sinusite Aiguë:
+- Antibiothérapie si: fièvre > 38,5°C + douleur intense + échec traitement symptomatique
+- Traitement: Amoxicilline 1g x 3/jour, 7-10 jours
+
+Bronchite Aiguë:
+- Étiologie: VIRALE dans 90% des cas
+- ❌ PAS D'ANTIBIOTIQUE sauf si:
+  * BPCO avec exacerbation purulente
+  * Insuffisance respiratoire chronique
+
+Infections Urinaires:
+
+Cystite Simple (femme):
+- 1ère intention: Fosfomycine-trométamol dose unique 3g
+- Alternative: Nitrofurantoïne 100mg x 3/jour, 5 jours
+- Éviter les quinolones (résistance croissante)
+
+Pyélonéphrite:
+- Fluoroquinolone (ciprofloxacine 500mg x 2/jour) pendant 7 jours
+- Ou ceftriaxone 1g IV puis relais oral
+- ECBU systématique avant traitement
+
+Infections Cutanées:
+
+Impétigo:
+- Localisé: Acide fusidique crème 2x/jour, 5 jours
+- Étendu: Pristinamycine 1g x 2/jour, 7 jours
+
+Érysipèle:
+- Amoxicilline 1g x 3/jour, 7 jours
+- Allergie: Pristinamycine ou clindamycine
+
+⚠️ Antibiorésistance:
+- Éviter l'usage des quinolones et C3G en 1ère intention
+- Favoriser l'amoxicilline quand possible
+- Respecter les durées de traitement recommandées
