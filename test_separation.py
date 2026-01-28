@@ -6,30 +6,30 @@ API_URL = "http://localhost:8000"
 
 TESTS = [
     {
-        "name": "Client A - Question technique (devrait réussir)",
+        "name": "Client A - Question résiliation (devrait réussir)",
         "api_key": "tenantA_key",
-        "question": "Quelle est l'architecture de la plateforme ?",
+        "question": "Quelle est la procédure de résiliation ?",
         "should_find_answer": True,
         "expected_tenant": "clientA"
     },
     {
-        "name": "Client A - Question médicale (devrait échouer)",
+        "name": "Client A - Question sinistre (devrait échouer)",
         "api_key": "tenantA_key",
-        "question": "Comment traiter le diabète de type 2 ?",
+        "question": "Comment déclarer un sinistre ?",
         "should_find_answer": False,
         "expected_tenant": "clientA"
     },
     {
-        "name": "Client B - Question médicale (devrait réussir)",
+        "name": "Client B - Question sinistre (devrait réussir)",
         "api_key": "tenantB_key",
-        "question": "Quels sont les symptômes d'une insuffisance cardiaque ?",
+        "question": "Quelle est la procédure de déclaration de sinistre ?",
         "should_find_answer": True,
         "expected_tenant": "clientB"
     },
     {
-        "name": "Client B - Question technique (devrait échouer)",
+        "name": "Client B - Question résiliation (devrait échouer)",
         "api_key": "tenantB_key",
-        "question": "Comment déployer sur Kubernetes ?",
+        "question": "Comment enregistrer une résiliation dans le CRM ?",
         "should_find_answer": False,
         "expected_tenant": "clientB"
     },
