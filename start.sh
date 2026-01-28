@@ -20,15 +20,18 @@ pkill -f "uvicorn app.main:app" 2>/dev/null
 pkill -f "streamlit run frontend.py" 2>/dev/null
 
 echo "🔧 Lancement du backend FastAPI..."
-python -m uvicorn app.main:app --reload &
+nohup python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 > backend.log 2>&1 &
 BACKEND_PID=$!
 
 # Attendre que le backend démarre
 sleep 3
 
 echo "🎨 Lancement de l'interface Streamlit..."
-streamlit run frontend.py &
+nohup streamlit run frontend_clean.py --server.headless true --server.port 8501 > frontend.log 2>&1 &
 FRONTEND_PID=$!
+
+# Attendre que streamlit démarre
+sleep 2
 
 echo ""
 echo "✅ Système démarré!"
@@ -39,11 +42,13 @@ echo "   - Documentation: http://localhost:8000/docs"
 echo "   - Frontend: http://localhost:8501"
 echo ""
 echo "🔑 API Keys:"
-echo "   - Client A (Tech): tenantA_key"
-echo "   - Client B (Médical): tenantB_key"
+echo "   - Client A: tenantA_key"
+echo "   - Client B: tenantB_key"
 echo ""
-echo "Pour arrêter: Ctrl+C"
+echo "📋 Logs:"
+echo "   - Backend: tail -f backend.log"
+echo "   - Frontend: tail -f frontend.log"
 echo ""
-
-# Attendre les processus
-wait
+echo "🛑 Pour arrêter:"
+echo "   pkill -f uvicorn && pkill -f streamlit"
+echo ""

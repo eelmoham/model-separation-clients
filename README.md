@@ -13,35 +13,132 @@ Application SaaS multi-tenant avec séparation stricte des données clients util
 
 ## 🚀 Démarrage Rapide
 
-### Installation
+### Étape 1: Installation
 
 ```bash
-# Cloner le projet
+# 1. Cloner le projet
 git clone https://github.com/eelmoham/model-separation-clients.git
 cd model-separation-clients
 
-# Créer l'environnement virtuel
+# 2. Créer l'environnement virtuel Python
 python3 -m venv venv
+
+# 3. Activer l'environnement virtuel
 source venv/bin/activate  # macOS/Linux
 # ou: venv\Scripts\activate  # Windows
 
-# Installer les dépendances
+# 4. Installer toutes les dépendances (FastAPI, ChromaDB, Streamlit, etc.)
 pip install -r req.txt
 ```
 
-### Lancement
+### Étape 2: Lancement du Projet
 
 ```bash
-# Démarrer backend et frontend
+# Méthode simple: utiliser le script de lancement
 ./start.sh
 ```
 
-**URLs:**
-- Frontend: http://localhost:8501
-- Backend API: http://localhost:8000
-- Documentation API: http://localhost:8000/docs
+Le script lancera automatiquement:
+- ✅ **Backend FastAPI** sur le port 8000 (en arrière-plan)
+- ✅ **Frontend Streamlit** sur le port 8501 (en arrière-plan)
+- ✅ **Chargement des documents** pour Client A et Client B
 
-## 📁 Structure du Projet
+**Accès aux services:**
+- 🌐 **Interface utilisateur**: http://localhost:8501
+- 🔌 **API Backend**: http://localhost:8000
+- 📚 **Documentation API**: http://localhost:8000/docs
+
+### Étape 3: Vérifier que ça fonctionne
+
+```bash
+# Vérifier le backend
+curl http://localhost:8000/
+# Résultat attendu: {"status":"ok","tenant_stats":null}
+
+# Voir les logs en temps réel
+tail -f backend.log    # Logs du backend
+tail -f frontend.log   # Logs du frontend
+```
+
+### Arrêter le Projet
+
+```bash
+pkill -f uvicorn && pkill -f streamlit
+```
+
+## � Comment ça Fonctionne
+
+### Architecture du Système
+
+```
+┌─────────────┐         ┌──────────────┐         ┌─────────────┐
+│  Frontend   │────────▶│   Backend    │────────▶│  ChromaDB   │
+│  Streamlit  │  HTTP   │   FastAPI    │  Query  │   Vector    │
+│             │◀────────│              │◀────────│   Store     │
+└─────────────┘         └──────────────┘         └─────────────┘
+     │                        │                         │
+     │                        │                         │
+  Client A                X-API-KEY              tenant_clientA
+  Client B              Authentication           tenant_clientB
+```
+
+### Flux d'une Requête
+
+1. **Sélection du Client** (Frontend)
+   - L'utilisateur sélectionne Client A ou Client B
+   - Le frontend utilise l'API Key correspondante (`tenantA_key` ou `tenantB_key`)
+
+2. **Envoi de la Question**
+   - La question est envoyée au backend via HTTP POST `/query`
+   - Header d'authentification: `X-API-KEY: tenantA_key`
+
+3. **Authentification** (Backend)
+   - Le backend valide l'API Key
+   - Extrait le `tenant_id` (clientA ou clientB)
+   - Rejette la requête si l'API Key est invalide
+
+4. **Recherche Sémantique** (RAG Service)
+   - La question est transformée en vecteur d'embedding (384 dimensions)
+   - ChromaDB cherche les documents similaires **uniquement dans la collection du tenant**
+   - Collection `tenant_clientA` pour Client A
+   - Collection `tenant_clientB` pour Client B
+   - **Isolation garantie**: aucun accès cross-tenant possible
+
+5. **Filtrage des Résultats**
+   - Seuls les résultats avec distance < 1.0 sont conservés
+   - Si aucun résultat pertinent: "Aucune information pertinente trouvée"
+   - Sinon: extraits directs des documents sources
+
+6. **Réponse avec Sources**
+   ```json
+   {
+     "answer": "Extrait du document...",
+     "sources": ["docA1_procedure_resiliation.txt"],
+     "has_answer": true,
+     "tenant_id": "clientA"
+   }
+   ```
+
+7. **Affichage** (Frontend)
+   - La réponse s'affiche dans l'interface chat
+   - Les sources sont listées en bas
+
+### Séparation des Données
+
+**Client A** a accès uniquement à:
+- `data/clientA/docA1_procedure_resiliation.txt`
+- `data/clientA/docA2_produit_rc_pro_a.txt`
+
+**Client B** a accès uniquement à:
+- `data/clientB/docB1_procedure_sinistre.txt`
+- `data/clientB/docB2_produit_rc_pro_b.txt`
+
+**Mécanismes de sécurité**:
+- Collections ChromaDB séparées physiquement
+- Validation de l'API Key à chaque requête
+- Pas de référence croisée possible entre tenants
+
+## �📁 Structure du Projet
 
 ```
 .
@@ -62,14 +159,24 @@ pip install -r req.txt
 
 ## 🎯 Utilisation
 
-### Interface Web
+### Option 1: Interface Web (Recommandé)
 
-1. Ouvrir http://localhost:8501
-2. Sélectionner un client (A ou B)
-3. Poser une question
-4. Voir la réponse avec sources
+1. **Ouvrir l'interface**: http://localhost:8501
 
-### API REST
+2. **Sélectionner un client** dans la barre latérale:
+   - 🏢 Client A (Résiliation & RC Pro A)
+   - 🏥 Client B (Sinistres & RC Pro B)
+
+3. **Poser une question**:
+   - Tapez votre question dans le champ de saisie
+   - Ou cliquez sur une **question suggérée** (7 exemples par client)
+
+4. **Voir la réponse**:
+   - La réponse apparaît avec les extraits des documents
+   - Les sources sont listées en bas
+   - Seules les informations du client sélectionné sont accessibles
+
+### Option 2: API REST
 
 ```bash
 # Client A
@@ -98,6 +205,28 @@ python test_separation.py
 |----------|----------------|-------------------------------------|
 | Client A | `tenantA_key`  | Résiliation, RC Pro A               |
 | Client B | `tenantB_key`  | Sinistres, RC Pro B                 |
+
+## 💡 Questions Suggérées
+
+### Client A questions (résiliation & RC Pro A):
+
+- Quelle est la procédure de résiliation?
+- Comment enregistrer une résiliation dans le CRM?
+- Quel est le délai d'accusé de réception?
+- Qu'est-ce que la RC Pro A?
+- Quelles sont les exclusions de hauteur?
+- Quelle est la franchise de la RC Pro A?
+- Qui valide les dossiers sensibles?
+
+### Client B questions (sinistres & RC Pro B):
+
+- Quelle est la procédure de déclaration de sinistre?
+- Quel est le délai de déclaration de sinistre?
+- Qu'est-ce que la RC Pro B?
+- Quelles sont les exclusions de sous-traitance?
+- Y a-t-il des travaux en hauteur exclus?
+- Comment contacter le service sinistres?
+- Quelle est la couverture de la RC Pro B?
 
 ## 🛠️ Technologies
 
@@ -201,17 +330,3 @@ Pour un système de production, envisager :
 4. **Chunking** : Découper les documents en chunks pour meilleure précision
 5. **Monitoring** : Logs structurés, métriques, alertes
 6. **Tests** : Suite de tests automatisés pour validation continue
-
-## 📄 Licence
-
-Projet de test pour recrutement.
-
-## 👤 Auteur
-
-Développé dans le cadre d'un test technique.
-
----
-
-**Temps de développement estimé** : 4-5 heures
-# model-separation-clients
-# model-separation-clients
